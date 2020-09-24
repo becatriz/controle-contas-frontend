@@ -32,8 +32,10 @@
         <v-btn dark dense color="orange" @click="cancel">Cancelar</v-btn>
         <v-btn dark dense color="green" @click="save">Salvar</v-btn>
       </v-card-actions>
+
     </v-card>
-    <v-data-table :headers="headers" :items="users" class="elevation-1" >
+    <v-card class="mb-6 mt-9 mx-auto" width="95%">
+      <v-data-table :headers="headers" :items="users" class="elevation-1" >
       <template v-slot:top >
         <v-toolbar flat color="gray">
           <v-toolbar-title class="overline mb-4">Usuários Cadastrados</v-toolbar-title>
@@ -65,6 +67,7 @@
         <v-subheader>Nenhum usuário cadastrado</v-subheader>
       </template>
     </v-data-table>
+    </v-card>
   </div>
 </template>
 
@@ -92,6 +95,7 @@ export default {
       {
         text: "Ações",
         value: "actions",
+        sortable:false
       },
     ],
   }),
@@ -183,11 +187,7 @@ export default {
       this.genarationId++;
     },
 
-    deleteItem(item) {
-      const index = this.desserts.indexOf(item);
-      confirm("Are you sure you want to delete this item?") &&
-        this.desserts.splice(index, 1);
-    },
+  
   },
 };
 </script>

@@ -13,13 +13,13 @@
       </v-list>
     </v-navigation-drawer>
 
-    <v-app-bar app clipped-left>
+    <v-app-bar  app clipped-left>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
       <v-toolbar-title>Controle de Contas</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-switch v-model="active" :label="`Dark`"></v-switch>
     </v-app-bar>
-    <v-main>
+    <v-main >
        <router-view></router-view>
     </v-main>
     <v-footer app>
@@ -76,4 +76,5 @@ export default {
 .v-list{
   margin-right: 10px;
 }
+
 </style>

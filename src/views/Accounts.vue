@@ -18,6 +18,31 @@
         <div class="overline mb-4">Nova Conta</div>
         <v-row>
           <v-col cols="12" sm="6" md="3">
+          <v-menu
+          ref="menuDateDialog"
+          v-model="menuDateDialog"
+          :close-on-content-click="false"
+          transition="scale-transition"
+          offset-y
+          max-width="290px"
+          min-width="290px"
+        >
+          <template v-slot:activator="{ on, attrs }">
+            <v-text-field
+              v-model="dateFormatted"
+              label="Data"
+              persistent-hint
+              outlined
+              dense
+               v-bind="attrs"
+              prepend-icon="mdi-calendar"
+              v-on="on"
+            ></v-text-field>
+          </template>
+          <v-date-picker v-model="accountCurrent.date" no-title @input="formatattedDateMenu"></v-date-picker>
+        </v-menu>
+          </v-col>
+          <v-col cols="12" sm="6" md="3">
             <v-text-field
               label="Descrição"
               v-model="accountCurrent.description"
@@ -116,6 +141,10 @@
           R$ {{ item.value.toFixed(2) }}
         </template>
 
+          <template v-slot:item.date="{ item }">
+           {{ formatattedDate(item.date) }}
+        </template>
+
         <template v-slot:no-data>
           <v-row justify="center">
             <v-subheader>Nenhuma conta cadastrada</v-subheader>
@@ -142,6 +171,17 @@
           <v-card-title class="overline">Detalhes da Conta</v-card-title>
           <v-card-text>
             <v-row>
+              <v-col cols="12" sm="6" md="3">
+                <v-text-field
+                  label="Data"
+                  :value="formatattedDate(accountsDetails.date)"
+                  outlined
+                  dense
+                  disabled
+                  hide-details
+                  style="font-weight:bold"
+                ></v-text-field>
+              </v-col>
               <v-col cols="12" sm="6" md="3">
                 <v-text-field
                   label="Descrição"
@@ -204,8 +244,12 @@
 </template>
 
 <script>
+import {ISOToBr} from "../util/DateFormatterUtil"
+
 export default {
   data: () => ({
+    dateFormatted: "",
+    menuDateDialog: false,
     showForm: false,
     dialog: false,
     accountRemove: null,
@@ -213,12 +257,17 @@ export default {
     accountCurrent: {},
     accounts: [],
     accountsDetails: {
-      value: 0
+      value: 0,
+      date:""
     },
     genarationId: 3,
     totalAccounts: 0,
     type: ["Receita", "Despesas"],
     headers: [
+      {
+        text: "Data",
+        value: "date"
+      },
       {
         text: "Descrição",
         value: "description",
@@ -230,6 +279,7 @@ export default {
       {
         text: "Valor",
         value: "value",
+        
       },
       {
         text: "Observação",
@@ -252,6 +302,7 @@ export default {
       this.accounts = [
         {
           id: 0,
+          date: "2020-06-02",
           description: "Bolo de Fubá",
           type: "Receita",
           value: 100.0,
@@ -259,13 +310,15 @@ export default {
         },
         {
           id: 1,
+          date: "2020-07-02",
           description: "Bolo de Fubá",
           type: "Despesas",
-          value: 100.0,
+          value: 5.0,
           observation: "Beleza",
         },
         {
           id: 2,
+          date: "2020-09-02",
           description: "Bolo de Fubá",
           type: "Receita",
           value: 500.0,
@@ -320,6 +373,14 @@ export default {
         else this.totalAccounts -= element.value;
       });
     },
+    formatattedDateMenu(){
+      this.dateFormatted = ISOToBr(this.accountCurrent.date)
+      this.menuDateDialog = false
+    },
+     formatattedDate(data){
+      return ISOToBr(data)
+      
+    }
   },
 };
 </script>

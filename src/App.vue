@@ -13,7 +13,7 @@
       </v-list>
     </v-navigation-drawer>
 
-    <v-app-bar  app clipped-left>
+    <v-app-bar elevation="0" app clipped-left>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
       <v-toolbar-title>Controle de Contas</v-toolbar-title>
       <v-spacer></v-spacer>

@@ -28,6 +28,8 @@
 </template>
 
 <script>
+import AccountsService from '../services/Account.service'
+
 export default {
   data: () => ({
     totalExpenses: 0,
@@ -51,85 +53,12 @@ export default {
     ],
   }),
   created() {
-    this.inicialize();
+    this.findAllAccounts();
   },
 
   methods: {
     inicialize() {
-      this.accounts = [
-        {
-          id: 0,
-          date: "2020-01-02",
-          description: "Bolo de Fubá",
-          type: "Receita",
-          value: 100.0,
-          observation: "Beleza",
-        },
-        {
-          id: 0,
-          date: "2020-02-02",
-          description: "Bolo de Fubá",
-          type: "Receita",
-          value: 200,
-          observation: "Beleza",
-        },
-        {
-          id: 0,
-          date: "2020-03-02",
-          description: "Bolo de Fubá",
-          type: "Receita",
-          value: 87.0,
-          observation: "Beleza",
-        },
-        {
-          id: 0,
-          date: "2020-04-02",
-          description: "Bolo de Fubá",
-          type: "Despesas",
-          value: 500.0,
-          observation: "Beleza",
-        },
-        {
-          id: 0,
-          date: "2020-05-02",
-          description: "Bolo de Fubá",
-          type: "Receita",
-          value: 350.0,
-          observation: "Beleza",
-        },
-        {
-          id: 0,
-          date: "2020-06-02",
-          description: "Bolo de Fubá",
-          type: "Receita",
-          value: 100.0,
-          observation: "Beleza",
-        },
-        {
-          id: 1,
-          date: "2020-07-02",
-          description: "Bolo de Fubá",
-          type: "Despesas",
-          value: 5.0,
-          observation: "Beleza",
-        },
-        {
-          id: 2,
-          date: "2020-09-02",
-          description: "Bolo de Fubá",
-          type: "Receita",
-          value: 500.0,
-          observation: "Beleza",
-        },
-        {
-          id: 2,
-          date: "2020-10-02",
-          description: "Bolo de Fubá",
-          type: "Receita",
-          value: 700.0,
-          observation: "Beleza",
-        },
-      ];
+      
 
       let toDay = new Date().toISOString().slice(0, 10);
       let year = toDay.slice(0, 4);
@@ -150,7 +79,16 @@ export default {
         if (element.type === "Receita") this.totalRecipie += element.value;
         else this.totalExpenses += element.value;
       });
+      
     },
+
+     async findAllAccounts(){
+          const response = await AccountsService.findAll();
+          this.accounts = response;
+          this.inicialize()
+      }
+
+    
   },
 };
 </script>

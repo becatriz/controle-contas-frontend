@@ -72,13 +72,14 @@
 </template>
 
 <script>
+import UserService from '../services/User.service'
+
 export default {
   data: () => ({
     showForm: false,
     itemEdit: null,
     users: [],
     userCurrent: {},
-    genarationId: 3,
     headers: [
       {
         text: "Nome",
@@ -111,61 +112,45 @@ export default {
   },
 
   methods: {
-    initialize() {
-      this.users = [
-        {
-          id: 0,
-          name: "Beca Triz",
-          username: "becatriz",
-          password: "123",
-          email: "beca@gmail.com",
-          active: true,
-        },
-        {
-          id: 1,
-          name: "Lara Lara",
-          username: "lara",
-          password: "123",
-          email: "lara@gmail.com",
-          active: false,
-        },
-        {
-          id: 2,
-          name: "Kaka Kaka",
-          username: "Kaka",
-          password: "123",
-          email: "lal@gmail.com",
-          active: true,
-        },
-      ];
+    async initialize() {
+      const response = await UserService.findAll();
+      this.users = response;
     },
 
     openForm() {
       this.showForm = true;
     },
 
-    activateInactivate(item) {
+    async activateInactivate(item) {
       item.active = !item.active;
+      const response = await UserService.update(item);
+       if(response.status === 200){
+        alert("Status alterado com sucesso!");
+      }else alert("Erro ao alterar status");
+        this.initialize();
+      
     },
 
     save() {
-      if (this.itemEdit == null) this.addNewUser();
+      if (this.itemEdit == null) 
+      this.addNewUser();
       else this.saveEdit();
-      this.cancel();
-    },
-
-    saveEdit(){
-      for(let i = 0; i < this.users.length; i++ ){
-        if(this.users[i].id == this.itemEdit.id){
-          this.users.splice(i,1, this.itemEdit);
-          break;
-        }
-      }
+      
       this.showForm = false;
       this.cancel();
     },
 
+    async saveEdit(){
+      const response = await UserService.update(this.itemEdit);         
+      if(response.status === 200){
+        alert("Atualizado com sucesso!");
+      }else alert("Erro ao atualizar");
+        this.initialize();
+      
+    },
+
     cancel() {
+    
       this.userCurrent = {};
       this.itemEdit = null;
     },
@@ -178,13 +163,16 @@ export default {
       this.showForm = true;
     },
 
-    addNewUser() {
+    async addNewUser() {
       let userCopy = {};
       Object.assign(userCopy, this.userCurrent);
-      userCopy.id = this.genarationId;
       userCopy.active = true;
-      this.users.push(userCopy);
-      this.genarationId++;
+      const response = await UserService.create(userCopy);
+      if(response.status === 201){
+        alert("Salvo com sucesso!");
+        this.initialize();
+      }else alert("Erro ao cadastrar usuário");
+      
     },
 
   

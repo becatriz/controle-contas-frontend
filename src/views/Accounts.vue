@@ -244,6 +244,7 @@
 </template>
 
 <script>
+import AccountService from '../services/Account.service'
 import {ISOToBr} from "../util/DateFormatterUtil"
 
 export default {
@@ -260,9 +261,8 @@ export default {
       value: 0,
       date:""
     },
-    genarationId: 3,
     totalAccounts: 0,
-    type: ["Receita", "Despesas"],
+    type: ["Receita", "Despesa"],
     headers: [
       {
         text: "Data",
@@ -298,35 +298,11 @@ export default {
   },
 
   methods: {
-    initialize() {
-      this.accounts = [
-        {
-          id: 0,
-          date: "2020-06-02",
-          description: "Bolo de Fubá",
-          type: "Receita",
-          value: 100.0,
-          observation: "Beleza",
-        },
-        {
-          id: 1,
-          date: "2020-07-02",
-          description: "Bolo de Fubá",
-          type: "Despesas",
-          value: 5.0,
-          observation: "Beleza",
-        },
-        {
-          id: 2,
-          date: "2020-09-02",
-          description: "Bolo de Fubá",
-          type: "Receita",
-          value: 500.0,
-          observation: "Beleza",
-        },
-      ];
-
+   async initialize() {
+      const response = await AccountService.findAll();
+      this.accounts = response
       this.calculateTotal();
+
     },
 
     openForm() {
@@ -338,29 +314,39 @@ export default {
       this.accountsDetails = item;
     },
 
-    save() {
+    async save() {
       let newAccount = this.accountCurrent;
       Object.assign(this.accountCurrent);
       newAccount.id = this.genarationId;
       newAccount.value = parseFloat(newAccount.value);
-      this.accounts.push(newAccount);
-      this.genarationId++;
-      this.calculateTotal();
-      this.cancel();
+      
+      const response = await AccountService.create(newAccount);
+      
+       if(response.status === 201){
+        alert("Salvo com sucesso!");
+        this.cancel();
+        this.initialize();
+      }else alert("Erro ao cadastrar conta");
+
     },
     cancel() {
       this.showForm = false;
+      console.log(this.accountCurrent)
       this.accountCurrent = {};
+      console.log(this.accountCurrent)
       this.accountRemove = null;
     },
-    remove() {
-      this.accounts.forEach((element, index) => {
-        if (element.id == this.accountRemove.id) {
-          this.accounts.splice(index, 1);
-        }
-      });
-      this.calculateTotal();
+    async remove() {
+
+      const response = await AccountService.delete(this.accountRemove);
+
+      if(response.status === 200){
+        this.cancel();
+        this.initialize();
+      }else alert("Erro ao excluir conta");
+
       this.dialog = false;
+      
     },
     showDialog(item) {
       this.dialog = true;

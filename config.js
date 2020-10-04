@@ -1,3 +1,3 @@
 export default {
-  apiHost: 'https://controlecontas-rl-api.herokuapp.com/'
+  apiHost: 'https://controlecontas-rl-api.herokuapp.com'
 };

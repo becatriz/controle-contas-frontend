@@ -1,3 +1,3 @@
 export default {
-  apiHost: 'http://127.0.0.1:3000'
+  apiHost: 'https://controlecontas-rl-api.herokuapp.com/'
 };

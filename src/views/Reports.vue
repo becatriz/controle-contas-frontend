@@ -1,5 +1,6 @@
 <template>
   <div>
+    <loading v-if="loading" ></loading>
     <v-container>
       <v-card class="overline" color="grey" dark>
         <v-card-title> Balanço Anual </v-card-title>
@@ -28,10 +29,16 @@
 </template>
 
 <script>
+import Loading from '../components/Loading.vue'
 import AccountsService from '../services/Account.service'
 
 export default {
+  components:{
+    Loading
+  },
+
   data: () => ({
+    loading: true,
     totalExpenses: 0,
     totalRecipie: 0,
     labels: [],
@@ -59,7 +66,6 @@ export default {
   methods: {
     inicialize() {
       
-
       let toDay = new Date().toISOString().slice(0, 10);
       let year = toDay.slice(0, 4);
       let month = toDay.slice(5, 7);
@@ -83,8 +89,10 @@ export default {
     },
 
      async findAllAccounts(){
+          this.loading = true;
           const response = await AccountsService.findAll();
           this.accounts = response;
+          this.loading = false;
           this.inicialize()
       }
 

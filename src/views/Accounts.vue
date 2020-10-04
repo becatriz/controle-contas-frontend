@@ -1,5 +1,6 @@
 <template>
   <div>
+    <loading v-if="loading" ></loading>
     <v-card class="mb-6 mt-9 mx-auto" width="95%" v-show="showForm">
       <v-btn
         fab
@@ -245,11 +246,17 @@
 
 <script>
 import AccountService from '../services/Account.service'
+import Loading from '../components/Loading.vue'
 import {ISOToBr} from "../util/DateFormatterUtil"
 
 export default {
+  components:{
+    Loading
+  },
+
   data: () => ({
     dateFormatted: "",
+    loading: true,
     menuDateDialog: false,
     showForm: false,
     dialog: false,
@@ -299,8 +306,10 @@ export default {
 
   methods: {
    async initialize() {
+      this.loading = true;
       const response = await AccountService.findAll();
       this.accounts = response
+      this.loading = false;
       this.calculateTotal();
 
     },
